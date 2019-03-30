@@ -34,8 +34,8 @@ posts =[
 @app.route("/")
 @app.route("/home")
 def home():
-    # return  render_template('home.html', posts_data=posts)
-  return "<h1>This is home</h1>"
+    return  render_template('home.html', posts_data=posts)
+  
 
 
 @app.route('/about')

@@ -1,0 +1,13 @@
+{%extends 'layout.html' %}
+{% block content %}
+<article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+        <a class="mr-2" href="#">{{ posts_data.singer }}</a>
+        <small class="text-muted">{{ posts_data.date_released }}</small>
+      </div>
+      <h2><a class="article-title" href="#">{{ posts_data.album }}</a><h2>
+      <p class="article-content">{{ posts_data.Genre }}</p>
+    </div>
+  </article> 
+{% endblock %}
