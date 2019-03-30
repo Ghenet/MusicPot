@@ -55,11 +55,11 @@ def register():
 
 @app.route('/login', methods =['GET','POST']) 
 def login():
-    form = LoginForm()
-    if form.validate_on_sumbit():
-        if form.email.data == 'admin@ga.com' and form.password.data =='123':
+    form =LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@ga.com' and form.password.data == '123':
             flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
+            return redirect(url_for('home'))        
         else:
             flash('Unsuccessful login try again please','danger')
     return render_template('login.html',title='Login', form=form)            

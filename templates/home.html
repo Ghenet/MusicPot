@@ -1,13 +1,15 @@
-{%extends 'layout.html' %}
+{% extends 'layout.html' %}
 {% block content %}
+{% for post in posts_data %}
 <article class="media content-section">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="mr-2" href="#">{{ posts_data.singer }}</a>
-        <small class="text-muted">{{ posts_data.date_released }}</small>
+        <a class="mr-2" href="#">{{ post.singer }}</a>
+        <small class="text-muted">{{ post.date_released }}</small>
       </div>
-      <h2><a class="article-title" href="#">{{ posts_data.album }}</a><h2>
-      <p class="article-content">{{ posts_data.Genre }}</p>
+      <h2><a class="article-title" href="#">{{ post.album }}</a><h2>
+      <p class="article-content">{{ post.Genre }}</p>
     </div>
   </article> 
+  {% endfor %}
 {% endblock %}
