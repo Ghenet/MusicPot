@@ -38,11 +38,10 @@ def home():
   
 
 
-@app.route('/about')
-def about():
-    # return render_template('about.html',title='Hey About')    
-   return ("<h1>This is About page</h1>")
-
+@app.route('/profile')
+def profile():
+     return render_template('profile.html',title='Hey About')    
+  
 
 if __name__ == '__main__':
     app.run(debug=True)

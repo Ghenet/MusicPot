@@ -1,0 +1,6 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>Profile Page!</h1>
+    <h5> Hey USer this is ur profile</h5>
+{% endblock%}
