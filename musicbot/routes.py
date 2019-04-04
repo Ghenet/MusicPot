@@ -3,42 +3,43 @@ import secrets
 from PIL import Image
 from flask import render_template,url_for,flash, redirect, request
 from musicbot import app , db, bcrypt
-from musicbot.forms import RegistrationForm ,LoginForm , UpdateAccountForm
+from musicbot.forms import RegistrationForm ,LoginForm , UpdateAccountForm , PostForm
 from musicbot.models import  User , Post
 from flask_login import login_user , current_user,logout_user, login_required
 
-posts =[
-    {
-        'singer': 'Rihanna',
-        'album' : 'Bad Girl',
-        'Genre' : "R&B",
-        'date_released': 'April 20, 2018'
+# posts =[
+#     {
+#         'singer': 'Rihanna',
+#         'album' : 'Bad Girl',
+#         'Genre' : "R&B",
+#         'date_released': 'April 20, 2018'
 
-    },
-    {
-        'singer': 'Chris Brown',
-        'album' : 'Royality',
-        'Genre' : "R&B",
-        'date_released': 'May 20, 2015'
+#     },
+#     {
+#         'singer': 'Chris Brown',
+#         'album' : 'Royality',
+#         'Genre' : "R&B",
+#         'date_released': 'May 20, 2015'
 
-    },
-    {
-        'singer': 'Justin Bieber',
-        'album' : 'Baby',
-        'Genre' : "POP",
-        'date_released': 'November, 2010'
+#     },
+#     {
+#         'singer': 'Justin Bieber',
+#         'album' : 'Baby',
+#         'Genre' : "POP",
+#         'date_released': 'November, 2010'
 
-    }
-]
+#     }
+# ]
 
 
 
 @app.route("/")
 @app.route("/home")
 def home():
+    #grabs all the data from the db
+    posts = Post.query.all()
     return  render_template('home.html', posts_data=posts)
   
-
 
 @app.route('/profile')
 def profile():
@@ -121,7 +122,14 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)    
 
 #create-post route
-@app.route("/post/new")
+@app.route("/post/new", methods=['GET', 'POST'])
 @login_required
 def new_post():
-    return render_template('create_post.html', title='New Post') 
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Post' ,form=form) 
