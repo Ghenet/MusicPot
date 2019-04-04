@@ -8,8 +8,8 @@
         <!-- <a class="mr-2" href="#">{{ post.title }}</a> -->
         Posted by <small class="text-muted">{{ post.author.username}}</small> on <small><p class="article-content">{{ post. date_posted.strftime('%Y-%m-%d') }}</p></small>
       </div>
-      <a class="mr-2" href="#">{{ post.title }}</a>
-      <h2><a class="article-title" href="#">{{ post.content}}</a></h2>
+      <h4><a class="mr-2" href="{{url_for('post', post_id=post.id)}}">{{ post.title }}</a></h4>
+      <p class="article-content" >{{ post.content}}</p>
       
     </div>
   </article> 
