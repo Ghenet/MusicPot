@@ -100,6 +100,7 @@ def save_picture(form_picture):
     
     return  picture_fn
 
+#account route
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
@@ -119,4 +120,8 @@ def account():
     image_file = url_for('static', filename='images/' + current_user.image_file)
     return render_template('account.html', title='Account', image_file=image_file, form=form)    
 
-
+#create-post route
+@app.route("/post/new")
+@login_required
+def new_post():
+    return render_template('create_post.html', title='New Post') 
