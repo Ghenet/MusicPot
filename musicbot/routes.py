@@ -1,36 +1,11 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template,url_for,flash, redirect, request
+from flask import render_template,url_for,flash, redirect, request, abort
 from musicbot import app , db, bcrypt
 from musicbot.forms import RegistrationForm ,LoginForm , UpdateAccountForm , PostForm
 from musicbot.models import  User , Post
 from flask_login import login_user , current_user,logout_user, login_required
-
-# posts =[
-#     {
-#         'singer': 'Rihanna',
-#         'album' : 'Bad Girl',
-#         'Genre' : "R&B",
-#         'date_released': 'April 20, 2018'
-
-#     },
-#     {
-#         'singer': 'Chris Brown',
-#         'album' : 'Royality',
-#         'Genre' : "R&B",
-#         'date_released': 'May 20, 2015'
-
-#     },
-#     {
-#         'singer': 'Justin Bieber',
-#         'album' : 'Baby',
-#         'Genre' : "POP",
-#         'date_released': 'November, 2010'
-
-#     }
-# ]
-
 
 
 @app.route("/")
@@ -132,7 +107,7 @@ def new_post():
         db.session.commit()
         flash('Your post has been created', 'success')
         return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post' ,form=form) 
+    return render_template('create_post.html', title='New Post',form=form,legend='Add your favorite song!') 
 
 #route for a specific post
 @app.route("/post/<int:post_id>")
@@ -140,3 +115,22 @@ def post(post_id):
     #get_or_404 will return 404 err msg if not found
     post = Post.query.get_or_404(post_id)
     return render_template('post.html', title=post.title, post=post)
+
+#route for updating a post
+@app.route("/post/<int:post_id>/update", methods=['GET', 'POST'])
+@login_required
+def update_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)    
+    form = PostForm()
+    if form.validate_on_submit():
+        post.title = form.title.data
+        post.content = form.content.data
+        db.session.commit()
+        flash('Your post has been updated!', 'success')
+        return redirect(url_for('post', post_id=post.id))
+    elif request.method == 'GET':    
+        form.title.data = post.title   #populates the input textfield with the old data
+        form.content.data = post.content  #populates the input textfield with the old data
+    return render_template('create_post.html', title='Update Post', form=form, legend='Update Song')    

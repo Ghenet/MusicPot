@@ -74,3 +74,5 @@ class PostForm(FlaskForm):
     title = StringField('Singer',validators=[DataRequired()])
     content = TextAreaField('Song', validators=[DataRequired()])
     submit = SubmitField('Post')   
+
+    
