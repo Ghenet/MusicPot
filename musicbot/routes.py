@@ -6,6 +6,7 @@ from musicbot import app , db, bcrypt
 from musicbot.forms import RegistrationForm ,LoginForm , UpdateAccountForm , PostForm
 from musicbot.models import  User , Post
 from flask_login import login_user , current_user,logout_user, login_required
+import requests
 
 
 @app.route("/")
@@ -88,7 +89,7 @@ def account():
         current_user.username = form.username.data
         current_user.email = form.email.data
         db.session.commit()
-        flash('your account has been updated!', 'success')
+        flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -105,7 +106,7 @@ def new_post():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash('Your post has been created', 'success')
+        flash('Your song has been created', 'success')
         return redirect(url_for('home'))
     return render_template('create_post.html', title='New Post',form=form,legend='Add your favorite song!') 
 
@@ -134,3 +135,41 @@ def update_post(post_id):
         form.title.data = post.title   #populates the input textfield with the old data
         form.content.data = post.content  #populates the input textfield with the old data
     return render_template('create_post.html', title='Update Post', form=form, legend='Update Song')    
+
+
+#delete route
+@app.route("/post/<int:post_id>/delete", methods=['POST'])
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+    if post.author != current_user:
+        abort(403)    
+    db.session.delete(post)
+    db.session.commit()
+    flash('Your song has been deleted!', 'success')
+    return redirect(url_for('home'))    
+
+
+# @app.route('/music', methods=['POST'])
+# def music():
+#     artist = request.form['artist']
+#     r = request.get('https://musixmatchcom-musixmatch.p.rapidapi.com/wsr/1.1/artist.search?s_artist_rating=desc&q_artist=coldplay&page=1&page_size=5,us&appid=961159e819msh2c2d036bc5333acp135d99jsnc3fcaa5a5d92')
+#     json_object = r.text
+#     return artist;
+    # return render_template('music.html')    
+
+
+# @app.route('/music', methods=['GET','POST'])
+
+
+# @app.route("/comment/new", methods=['GET', 'POST'])
+# @login_required
+# def new_comment():
+#     form = PostForm()
+#     if form.validate_on_submit():
+#         post = Post(title=form.title.data, content=form.content.data, author=current_user)
+#         db.session.add(post)
+#         db.session.commit()
+#         flash('Your song has been created', 'success')
+#         return redirect(url_for('home'))
+#     return render_template('create_post.html', title='New Post',form=form,legend='Add your favorite song!') 
