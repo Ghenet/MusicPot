@@ -17,7 +17,7 @@ Users can password reset request if they forgot their password.
 
 
 
-##Technologies Used:
+## Technologies Used:
 
 - Python Flask
 - Sqlite DB
@@ -27,7 +27,7 @@ Users can password reset request if they forgot their password.
 - Custom HTML, CSS, Bootstrap
 - YouTube API
 
-#Challenges and Wins
+## Challenges and Wins
  Wins: 
   - Core undestanding of Python ,ORM and the libraries I used
   - Extracting data from an external API
@@ -41,7 +41,7 @@ Users can password reset request if they forgot their password.
  
  
 
-Future Enhancements
+## Future Enhancements
 
 Due to the time constraints and the pace I had to learn new technologies, there were some features I wanted to implement but wasn't able to.
 - Chatbot to suggest user of desired music
