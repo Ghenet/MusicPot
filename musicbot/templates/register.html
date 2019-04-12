@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
         <div class="content-section">
                 <form method="POST" action="">
                         {{ form.hidden_tag()}}
