@@ -13,7 +13,6 @@ Technologies Used:
 
 - Python Flask
 - Sqlite DB
-- Peewee
 - SQLAlchemy
 - Pillow PyPI
 - JavaScript and Jquery
@@ -34,6 +33,7 @@ Challenges and Wins
  
 
 Future Enhancements
+
 Due to the time constraints and the pace I had to learn new technologies, there were some features I wanted to implement but wasn't able to.
 - Chatbot to suggest user of desired music
 - allow a user to create their own playlist
