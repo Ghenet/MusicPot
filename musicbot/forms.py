@@ -30,8 +30,6 @@ class RegistrationForm(FlaskForm):
             if user:
                 raise ValidationError('Username is taken. Please choose another one')
 
-
-
     #email validator
     def validate_email(self, email):
         for user in User.query.filter_by(email=email.data):
@@ -74,5 +72,32 @@ class PostForm(FlaskForm):
     title = StringField('Singer',validators=[DataRequired()])
     content = TextAreaField('Song', validators=[DataRequired()])
     submit = SubmitField('Post')   
+
+    #reset form
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset') 
+
+     #email validator
+    def validate_email(self, email):
+        for user in User.query.filter_by(email=email.data):
+            if user is None:
+                raise ValidationError('There is no account with that email.You must register first.')
+
+#reset password form
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password',validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password') 
+
+   
+
+
+
+# create a playlist form
+# class PlaylistForm(FlaskForm):
+#     title = StringField('Name of your playlist',validators=[DataRequired()])
+#     video = TextAreaField('Playlist Link', validators=[DataRequired()])
+#     submit = SubmitField('Add Playlist')   
 
     
