@@ -1,6 +1,9 @@
 {% extends 'layout.html' %}
 {% block content %}
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}"> -->
+<link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+<div class="container">
+    <div class="row"> 
+<div class="col-md-8">
 <section id="video">
 
 </section>
@@ -23,4 +26,27 @@
     </div>
   </article> 
   {% endfor %}
+  </div>
+  <div class="col-md-4">
+      <div class="content-section">
+        <h3>My Music</h3>
+        <p class='text-muted'>Filter the music you want.
+          <ul class="list-group">
+              <li class="list-group-item list-group-item-light">
+                  <a class="songs" href="#" data-playlist-id="PL6CTrxW12Bre4kny-OhqOEQwNjso0VKPc">Latest Albums</a>
+              </li>
+              <li class="list-group-item list-group-item-light">
+                  <a class="songs" href="#" data-playlist-id="RDCLAK5uy_kmPRjHDECIcuVwnKsx2Ng7fyNgFKWNJFs">Pop</a>
+              </li>
+              <li class="list-group-item list-group-item-light"><a class="songs" href="#" data-playlist-id="PLbogV24AcwCAo_dMhmFG6oiPUqSTXWT0a">R&B</a></li>
+              <li class="list-group-item list-group-item-light"><a class="songs" href="#" data-playlist-id="PL8F6B0753B2CCA128">Jazz Classics</a></li>
+              <li class="list-group-item list-group-item-light"><a class="songs" href="#" data-playlist-id="PLAp5HzjibeIkYpyJMDZB8qCAIlhZLUk7i">Classic Country</a></li>
+              <li class="list-group-item list-group-item-light"><a class="songs" href="#" data-playlist-id="PLpoUYdDxb6P56t8lnxnA412k_H5EMHd-8">Modern Rock hits</a></li>
+         </ul>
+        </p>
+      </div>
+    </div>
+    </div>
+    </div>
+    
 {% endblock %}
