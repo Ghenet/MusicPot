@@ -17,7 +17,7 @@ Users can password reset request if they forgot their password.
 
 
 
-Technologies Used:
+##Technologies Used:
 
 - Python Flask
 - Sqlite DB
@@ -27,7 +27,7 @@ Technologies Used:
 - Custom HTML, CSS, Bootstrap
 - YouTube API
 
-Challenges and Wins
+#Challenges and Wins
  Wins: 
   - Core undestanding of Python ,ORM and the libraries I used
   - Extracting data from an external API
