@@ -2,15 +2,17 @@ import os
 import secrets
 from PIL import Image
 from flask import render_template,url_for,flash, redirect, request, abort
-from musicbot import app , db, bcrypt
-from musicbot.forms import RegistrationForm ,LoginForm , UpdateAccountForm , PostForm
+from musicbot import app , db, bcrypt , mail
+from musicbot.forms import RegistrationForm ,LoginForm , UpdateAccountForm , PostForm, RequestResetForm, ResetPasswordForm
 from musicbot.models import  User , Post
 from flask_login import login_user , current_user,logout_user, login_required
+from flask_mail import Message
 import requests
 
 
 @app.route("/")
 @app.route("/home")
+@login_required
 def home():
     #grabs all the data from the db
     posts = Post.query.all()
@@ -51,7 +53,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password , form.password.data):
              login_user(user, remember=form.remember.data)
-             next_page = request.args.get('next')   #dont really know what this is doing , gotta refer back to part 6 at 43:00
+             next_page = request.args.get('next')   
              return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful.Please check email or password','danger')
@@ -106,9 +108,9 @@ def new_post():
         post = Post(title=form.title.data, content=form.content.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash('Your song has been created', 'success')
+        flash('Your comment has been created', 'success')
         return redirect(url_for('home'))
-    return render_template('create_post.html', title='New Post',form=form,legend='Add your favorite song!') 
+    return render_template('create_post.html', title='New Post',form=form,legend='Add your comments here!') 
 
 #route for a specific post
 @app.route("/post/<int:post_id>")
@@ -129,12 +131,12 @@ def update_post(post_id):
         post.title = form.title.data
         post.content = form.content.data
         db.session.commit()
-        flash('Your post has been updated!', 'success')
+        flash('Your comment has been updated!', 'success')
         return redirect(url_for('post', post_id=post.id))
     elif request.method == 'GET':    
         form.title.data = post.title   #populates the input textfield with the old data
         form.content.data = post.content  #populates the input textfield with the old data
-    return render_template('create_post.html', title='Update Post', form=form, legend='Update Song')    
+    return render_template('create_post.html', title='Update Post', form=form, legend='Update Comment')    
 
 
 #delete route
@@ -146,30 +148,47 @@ def delete_post(post_id):
         abort(403)    
     db.session.delete(post)
     db.session.commit()
-    flash('Your song has been deleted!', 'success')
+    flash('Your comment has been deleted!', 'success')
     return redirect(url_for('home'))    
 
-
-# @app.route('/music', methods=['POST'])
-# def music():
-#     artist = request.form['artist']
-#     r = request.get('https://musixmatchcom-musixmatch.p.rapidapi.com/wsr/1.1/artist.search?s_artist_rating=desc&q_artist=coldplay&page=1&page_size=5,us&appid=961159e819msh2c2d036bc5333acp135d99jsnc3fcaa5a5d92')
-#     json_object = r.text
-#     return artist;
-    # return render_template('music.html')    
-
-
-# @app.route('/music', methods=['GET','POST'])
+#function  to send email to user
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+    msg.body = f'''To reset your password, click on the following link:
+    {url_for('reset_token', token=token, _external=True)} 
+    If you did not make this request then just ignore this email
+    '''
+    mail.send(msg)
 
 
-# @app.route("/comment/new", methods=['GET', 'POST'])
-# @login_required
-# def new_comment():
-#     form = PostForm()
-#     if form.validate_on_submit():
-#         post = Post(title=form.title.data, content=form.content.data, author=current_user)
-#         db.session.add(post)
-#         db.session.commit()
-#         flash('Your song has been created', 'success')
-#         return redirect(url_for('home'))
-#     return render_template('create_post.html', title='New Post',form=form,legend='Add your favorite song!') 
+#reset request route/user enter their email to reset
+@app.route("/reset_password",methods=['GET','POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been send with instructions to reset your password', 'info')
+        return redirect(url_for('login'))
+    return render_template('reset_request.html',title='Reset Password', form=form)
+
+# reset password route - it accepts a token   
+@app.route("/reset_password/<token>", methods=['GET','POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('That is an invalid or expired token', 'warning')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit()
+        flash('Your password has been updated!You are now able to log in','success')
+        return redirect(url_for('login'))  
+    return render_template('reset_token.html', title='Reset Password', form=form)    
